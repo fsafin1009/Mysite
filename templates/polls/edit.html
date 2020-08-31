@@ -18,6 +18,14 @@
             <p style="color: red">Запись добавлена</p>
         {% endif %}
 
+      {% if messages %}
+        <div class="alert alert-success">
+            {% for mes in messages %}
+                    {{ mes }}
+            {%  endfor %}
+        </div>
+      {% endif %}
+
 
         {% if update %}
             <p class="mt-4">Страница редактирования</p>
@@ -25,7 +33,7 @@
                 {% csrf_token %}
                 {{ form }}
             </form>
-             <button form="update_data" type="submit" class="btn btn-primary mt-4">Обновить</button>
+            <button form="update_data" type="submit" class="btn btn-primary mt-4">Обновить</button>
 
         {% else %}
 
@@ -47,7 +55,18 @@
                         <td>{{ item.data_published }}</td>
                         <td>{{ item.title }}</td>
                         <td><a href="{% url 'polls:update_page' item.id %}">редактировать</a></td>
-                        <td><a href="{% url 'polls:delete_page' item.id %}">удалить</a></td>
+                        <td>
+                            <form id="form_delete" action="{% url 'polls:delete_page' item.id %}"
+                                  method="post">{% csrf_token %}</form>
+                            <a href="javascript:void(0)" onclick="delete_question()">Удалить</a>
+                            <script>
+                                function delete_question() {
+                                    if (confirm("Вы уверены?")) {
+                                        document.getElementById("form_delete").sumbit()
+                                    }
+                                }
+                            </script>
+                        </td>
                     </tr>
                     </tbody>
                 {% endfor %}
@@ -80,7 +99,8 @@
             </div>
         </div>
 
-        <button class="btn btn-light float-right mt-5 border-danger rounded-pill"><a class="text-success" href="{% url 'polls:edit_page' %}">Вернутьcя
+        <button class="btn btn-light float-right mt-5 border-danger rounded-pill"><a class="text-success"
+                                                                                     href="{% url 'polls:edit_page' %}">Вернутьcя
             назад</a></button>
     </div>
 {% endblock %}
