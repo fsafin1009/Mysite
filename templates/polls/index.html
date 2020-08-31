@@ -1,0 +1,20 @@
+{% include 'base.html' %}
+
+<div class="container">
+
+
+{% block content %}
+    {% for item in article %}
+        <ul class="list-group mt-5">
+            <li class="list-group-item">
+                <span class="mr-3">{{ item.title }}</span>
+                <span>{{ item.content|truncatechars:"5" }}</span>
+                <b>{{ item.data_published }}</b>
+                <span class="float-right mr-3"><a href="{% url 'polls:detail' item.id %}">Перейти к статье</a></span>
+            </li>
+        </ul>
+    {% endfor %}
+{% endblock %}
+</div>
+
+

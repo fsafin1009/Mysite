@@ -1,0 +1,11 @@
+{% include 'base.html' %}
+
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Статья: {{ get_article.title }}</h1>
+        <h1 class="mb-5">Дата публикации: {{ get_article.data_published }}</h1>
+        <span>Текст: {{ get_article.content }}</span>
+        <button class="btn btn-light float-right mt-5 border-danger rounded-pill"><a class="text-success" href="/">Вернутья назад</a></button>
+    </div>
+{% endblock %}

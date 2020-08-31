@@ -1,0 +1,86 @@
+{% include 'base.html' %}
+
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-5 font-italic text-success">Админ панель : </h1>
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mb-5" data-toggle="modal" data-target="#exampleModal">
+            Создать статью
+        </button>
+
+        {% if success_update %}
+            <p style="color: red">Запись обнавлена</p>
+        {% endif %}
+
+        {% if succes %}
+            <p style="color: red">Запись добавлена</p>
+        {% endif %}
+
+
+        {% if update %}
+            <p class="mt-4">Страница редактирования</p>
+            <form id="update_data" method="post">
+                {% csrf_token %}
+                {{ form }}
+            </form>
+             <button form="update_data" type="submit" class="btn btn-primary mt-4">Обновить</button>
+
+        {% else %}
+
+            <table class="table table-bordered-5">
+                <thead>
+                <tr>
+                    <th scope="col">Id</th>
+                    <th scope="col">Дата создания</th>
+                    <th scope="col">Название</th>
+                    <th scope="col">Редактирование</th>
+                    <th scope="col">Удаление</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for item in list_articles %}
+                    <tr>
+                        <th scope="row">{{ item.id }}</th>
+                        <td>{{ item.data_published }}</td>
+                        <td>{{ item.title }}</td>
+                        <td><a href="{% url 'polls:update_page' item.id %}">редактировать</a></td>
+                        <td><a href="{% url 'polls:delete_page' item.id %}">удалить</a></td>
+                    </tr>
+                    </tbody>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <!-- Modal -->
+
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Создание статьи</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="add_form" method="post">
+                            {% csrf_token %}
+                            {{ form }}
+                        </form>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                        <button form="add_form" type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn btn-light float-right mt-5 border-danger rounded-pill"><a class="text-success" href="{% url 'polls:edit_page' %}">Вернутьcя
+            назад</a></button>
+    </div>
+{% endblock %}
