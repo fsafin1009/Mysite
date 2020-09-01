@@ -1,0 +1,16 @@
+{% include 'base.html' %}
+
+
+{% block content %}
+    <h1 class="mt-4 text-center">Авторизация</h1>
+    <p><a href="/">Вернуться назад</a></p>
+
+    <div class="col-4">
+        <form id="add_form" method="post">
+            {% csrf_token %}
+            {{ form }}
+        </form>
+        <button form="add_form" type="submit" class="btn btn-primary mt-4">Добавить</button>
+    </div>
+
+{% endblock %}

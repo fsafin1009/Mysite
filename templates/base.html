@@ -31,6 +31,30 @@
             {% if url_edit == request.path %} active
             {% endif %}" href="{{ url_edit }}">Редактировать</a>
             </li>
+            {% if request.user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link btn-danger ml-5 {% url 'polls:logout_page' as logout_edit %}
+                    " href="{{ logout_edit }}">Выйти</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link {% url 'polls:login_page' as login_edit %}
+                {% if login_edit == request.path %} active
+                {% endif %}" href="{{ login_edit }}">Авторизация</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% url 'polls:register_page' as regis_edit %}
+                {% if regis_edit == request.path %} active
+                {% endif %}" href="{{ regis_edit }}">Регистрация</a>
+                </li>
+            {% endif %}
+
+
+
+
+
+
+            {{ request.user }}
         </ul>
     {% endblock %}
     {% block content %}

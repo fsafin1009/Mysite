@@ -2,9 +2,12 @@ from django.shortcuts import render, redirect
 
 from .models import Article
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .forms import ArticleForm
+from .forms import ArticleForm, AuthUserForm, RegisterUserForm
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 # Create your views here.
 
 
@@ -66,8 +69,7 @@ from django.contrib import messages
 
 
 # Cоздание с помощью класса
-
-
+# -----------------------------------------------------------
 class HomeListView(ListView):
     model = Article
     template_name = 'polls/index.html'
@@ -118,12 +120,35 @@ class ArticleDeleteView(CustomSuccessMessageMixin,DeleteView):
         messages.success(self.request, self.success_msg)
         return super(CustomSuccessMessageMixin, self).post(request)
 
+# --------------------------------------------------------------------------------------------------
+# Cоздание класса для Аторизации пользователя
+
+class MyLoginView(LoginView):
+    template_name = 'polls/login.html'
+    form_class = AuthUserForm
+    success_url = reverse_lazy('polls:edit_page')
+
+    def get_success_url(self):
+        return self.success_url
+
+class RegisterLoginView(CreateView):
+    model = User
+    template_name = 'polls/register.html'
+    form_class = RegisterUserForm
+    success_msg = "Пользователь создан"
+    success_url = reverse_lazy('polls:edit_page')
+
+    def form_valid(self, form):
+        form_valid = super(RegisterLoginView, self).form_valid(form)
+        username = form.cleaned_data['username']
+        password = form.cleaned_data['password']
+        aut_user =  authenticate(username = username, password = password)
+        login(self.request, aut_user)
+        return form_valid
 
 
-
-
-
-
+class MyLogoutView(LogoutView):
+    next_page = reverse_lazy('polls:edit_page')
 
 
 
