@@ -87,6 +87,7 @@ class CustomSuccessMessageMixin:
         return super(CustomSuccessMessageMixin, self).form_valid(form)
 
 
+
 class ArticleCreateView(CustomSuccessMessageMixin,CreateView):
     model = Article
     template_name = 'polls/edit.html'
@@ -113,6 +114,11 @@ class ArticleDeleteView(CustomSuccessMessageMixin,DeleteView):
     template_name = 'polls/edit.html'
     success_msg = "Запись удалена"
     success_url = reverse_lazy('polls:edit_page')
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, self.success_msg)
+        return super(CustomSuccessMessageMixin, self).post(request)
+
+
 
 
 
