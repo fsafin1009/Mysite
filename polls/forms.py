@@ -5,6 +5,8 @@ from .models import Article
 from django.contrib.auth.forms import AuthenticationForm
 
 
+
+# Создани Формы Создане отчета
 class ArticleForm(forms.ModelForm):
     class Meta():
         model = Article
@@ -15,6 +17,7 @@ class ArticleForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs = {"class": "form-control" , "rows" : 10}
 
+# Создани Формы Авторизации
 
 class AuthUserForm(AuthenticationForm,forms.ModelForm):
     class Meta():
@@ -26,7 +29,7 @@ class AuthUserForm(AuthenticationForm,forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs = {"class": "form-control"}
 
-
+# Создани Формы регистрации
 
 class RegisterUserForm(forms.ModelForm):
     class Meta():
@@ -38,6 +41,7 @@ class RegisterUserForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].widget.attrs = {"class": "form-control"}
 
+    # Пролучение авоматического шифорвание пароля
     def save(self, commit=True):
         user = super(RegisterUserForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password'])

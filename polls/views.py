@@ -9,7 +9,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 # Create your views here.
-
+from django.contrib.auth.mixins import LoginRequiredMixin, AccessMixin
 
 # Cоздание с помощью функции
 
@@ -89,8 +89,7 @@ class CustomSuccessMessageMixin:
         return super(CustomSuccessMessageMixin, self).form_valid(form)
 
 
-
-class ArticleCreateView(CustomSuccessMessageMixin,CreateView):
+class ArticleCreateView(LoginRequiredMixin,CustomSuccessMessageMixin,CreateView):
     model = Article
     template_name = 'polls/edit.html'
     form_class = ArticleForm
@@ -100,7 +99,13 @@ class ArticleCreateView(CustomSuccessMessageMixin,CreateView):
         kwargs ['list_articles'] = Article.objects.all().order_by('-id')
         return super(ArticleCreateView, self).get_context_data(**kwargs)
 
-class ArticleUpdateView(CustomSuccessMessageMixin,UpdateView):
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+        return super(LoginRequiredMixin, self).form_valid(form)
+
+class ArticleUpdateView(LoginRequiredMixin,CustomSuccessMessageMixin,UpdateView):
     model = Article
     template_name = 'polls/edit.html'
     form_class = ArticleForm
@@ -109,9 +114,12 @@ class ArticleUpdateView(CustomSuccessMessageMixin,UpdateView):
     def get_context_data(self, **kwargs):
         kwargs ['update'] = True
         return super(ArticleUpdateView, self).get_context_data(**kwargs)
+    def get_form_kwargs(self):
+        kwargs =  super(ArticleUpdateView, self).get_form_kwargs()
+        print(kwargs)
+        return kwargs
 
-
-class ArticleDeleteView(CustomSuccessMessageMixin,DeleteView):
+class ArticleDeleteView(LoginRequiredMixin,CustomSuccessMessageMixin,DeleteView):
     model = Article
     template_name = 'polls/edit.html'
     success_msg = "Запись удалена"
@@ -131,12 +139,16 @@ class MyLoginView(LoginView):
     def get_success_url(self):
         return self.success_url
 
+# Cоздание класса для Регистраци пользователя
+
 class RegisterLoginView(CreateView):
     model = User
     template_name = 'polls/register.html'
     form_class = RegisterUserForm
     success_msg = "Пользователь создан"
     success_url = reverse_lazy('polls:edit_page')
+
+# Cоздание функции для авторизации пользователя
 
     def form_valid(self, form):
         form_valid = super(RegisterLoginView, self).form_valid(form)
@@ -146,6 +158,7 @@ class RegisterLoginView(CreateView):
         login(self.request, aut_user)
         return form_valid
 
+# Cоздание класса для Выхода пользователя
 
 class MyLogoutView(LogoutView):
     next_page = reverse_lazy('polls:edit_page')

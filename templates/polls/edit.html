@@ -52,7 +52,7 @@
                 {% for item in list_articles %}
                     <tr>
                         <th scope="row">{{ item.id }}</th>
-                        <td>{{ item.data_published }}</td>
+                        <td>{{ item.data_published|date:'d.m.Y' }} - {{ item.author }}</td>
                         <td>{{ item.title }}</td>
                         <td><a href="{% url 'polls:update_page' item.id %}">редактировать</a></td>
                         <td>
