@@ -54,18 +54,28 @@
                         <th scope="row">{{ item.id }}</th>
                         <td>{{ item.data_published|date:'d.m.Y' }} - {{ item.author }}</td>
                         <td>{{ item.title }}</td>
-                        <td><a href="{% url 'polls:update_page' item.id %}">редактировать</a></td>
                         <td>
-                            <form id="form_delete" action="{% url 'polls:delete_page' item.id %}"
+                            {% if request.user == item.author %}
+                            <a href="{% url 'polls:update_page' item.id %}">редактировать</a>
+                            {% else %}
+                                Нет доступа
+                            {%  endif %}
+                        </td>
+                        <td>
+                            {% if request.user == item.author %}
+                           <form id="form_delete{{ item.id }}" action="{% url 'polls:delete_page' item.id %}"
                                   method="post">{% csrf_token %}</form>
-                            <a href="javascript:void(delete_question())" onclick="delete_question()">Удалить</a>
+                            <a href="javascript:void()"  onclick="delete_question{{ item.id }}()">Удалить</a>
                             <script>
-                                function delete_question() {
+                                function delete_question{{ item.id }}() {
                                     if (confirm("Вы уверены?")) {
-                                        document.getElementById("form_delete").submit()
+                                        document.getElementById("form_delete{{ item.id }}").submit()
                                     }
                                 }
                             </script>
+                            {% else %}
+                                Нет доступа
+                            {%  endif %}
                         </td>
                     </tr>
                     </tbody>

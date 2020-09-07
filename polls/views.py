@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from .models import Article
@@ -116,7 +117,9 @@ class ArticleUpdateView(LoginRequiredMixin,CustomSuccessMessageMixin,UpdateView)
         return super(ArticleUpdateView, self).get_context_data(**kwargs)
     def get_form_kwargs(self):
         kwargs =  super(ArticleUpdateView, self).get_form_kwargs()
-        print(kwargs)
+        # проверка пользователя на принадлежность авторства
+        if self.request.user !=  kwargs['instance'].author:
+            return self.handle_no_permission()
         return kwargs
 
 class ArticleDeleteView(LoginRequiredMixin,CustomSuccessMessageMixin,DeleteView):
@@ -128,7 +131,14 @@ class ArticleDeleteView(LoginRequiredMixin,CustomSuccessMessageMixin,DeleteView)
         messages.success(self.request, self.success_msg)
         return super(CustomSuccessMessageMixin, self).post(request)
 
-# --------------------------------------------------------------------------------------------------
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.request.user !=  self.object.author:
+            return self.handle_no_permission()
+        success_url =  self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+# - -------------------------------------------------------------------------------------------------
 # Cоздание класса для Аторизации пользователя
 
 class MyLoginView(LoginView):
@@ -161,7 +171,7 @@ class RegisterLoginView(CreateView):
 # Cоздание класса для Выхода пользователя
 
 class MyLogoutView(LogoutView):
-    next_page = reverse_lazy('polls:edit_page')
+    next_page = reverse_lazy('polls:login_page')
 
 
 

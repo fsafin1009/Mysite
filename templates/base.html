@@ -33,8 +33,8 @@
             </li>
             {% if request.user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link btn-danger ml-5 {% url 'polls:logout_page' as logout_edit %}
-                    " href="{{ logout_edit }}">Выйти</a>
+                    <a class="nav-link btn-danger ml-5 {% url 'polls:logout_page' as logout_edit %}"
+                   href="{{ logout_edit }}">Выйти</a>
                 </li>
             {% else %}
                 <li class="nav-item">
@@ -48,14 +48,8 @@
                 {% endif %}" href="{{ regis_edit }}">Регистрация</a>
                 </li>
             {% endif %}
-
-
-
-
-
-
-            {{ request.user }}
         </ul>
+        <span class="float-right text-success"> Добропожаловать: {{ request.user }}</span>
     {% endblock %}
     {% block content %}
     {% endblock %}
