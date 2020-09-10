@@ -81,6 +81,8 @@ class HomeDetaiView(DetailView):
     template_name = 'polls/detail.html'
     context_object_name = 'get_article'
 
+
+# Класс отображени усешной надписи по оперциям
 class CustomSuccessMessageMixin:
     @property
     def success_msg(self):

@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 
 from .models import Article
 from django.contrib.auth.forms import AuthenticationForm
+import re
+from django.core.exceptions import ValidationError
 
 
 
@@ -16,6 +18,14 @@ class ArticleForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for field in self.fields:
             self.fields[field].widget.attrs = {"class": "form-control" , "rows" : 10}
+
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if re.match(r'\d' , title):
+            raise ValidationError("Название не должно начинатся с цифры")
+        return title
+
 
 # Создани Формы Авторизации
 
